@@ -37,3 +37,8 @@ func (ctrl *IndexController) Health(c *gin.Context) {
 		"timestamp": time.Now().Unix(),
 	})
 }
+
+// Ping ping 检查
+func (ctrl *IndexController) Ping(c *gin.Context) {
+	response.SuccessWithData(c, "pong")
+}
