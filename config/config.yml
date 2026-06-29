@@ -1,0 +1,106 @@
+# ============================================================
+# Lychee-Go Framework Configuration
+# ============================================================
+
+# ---------- 应用基础配置 ----------
+app:
+  name: lychee-go
+  version: 1.0.0
+  debug: true
+  port: 8080
+  timezone: Asia/Shanghai
+  base_url: http://localhost:8080
+
+# ---------- 日志配置 ----------
+log:
+  level: debug
+  filename: runtime/logs/app.log
+  max_size: 100
+  max_backups: 30
+  max_age: 7
+  compress: true
+
+# ---------- 数据库配置 ----------
+database:
+  driver: mysql
+  host: 127.0.0.1
+  port: 3306
+  database: lychee_go
+  username: root
+  password: "123456"
+  charset: utf8mb4
+  prefix: ""
+  max_idle_conns: 10
+  max_open_conns: 100
+  conn_max_lifetime: 3600
+  log_mode: warn
+
+# ---------- 缓存配置 ----------
+cache:
+  driver: redis
+  host: 127.0.0.1
+  port: 6379
+  password: ""
+  database: 0
+  prefix: lychee_go_
+  default_ttl: 3600
+
+# ---------- JWT / Token 配置 ----------
+auth:
+  jwt_secret: "lychee-go-secret-key-change-it-in-production"
+  jwt_ttl: 86400
+  max_per_user: 10
+
+# ---------- 文件上传配置 ----------
+filesystem:
+  default: local
+  local:
+    root: runtime/uploads
+    url: /uploads
+  # oss:
+  #   access_key_id: your-access-key
+  #   access_key_secret: your-secret
+  #   bucket: your-bucket
+  #   endpoint: oss-cn-hangzhou.aliyuncs.com
+
+# ---------- 消息队列配置 ----------
+queue:
+  driver: memory
+  prefix: lychee_go_
+  default_queue: default
+
+# ---------- Session 配置 ----------
+session:
+  ttl: 7200
+  name: lychee_session
+
+# ---------- 跨域配置 ----------
+cors:
+  allow_origins: "*"
+  allow_methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH"
+  allow_headers: "Content-Type,Authorization,X-Requested-With"
+  expose_headers: "X-RateLimit-Limit,X-RateLimit-Remaining,X-RateLimit-Reset"
+  allow_credentials: true
+  max_age: 86400
+
+# ---------- 限流配置 ----------
+throttle:
+  limit: 60           # 每个窗口最大请求数
+  window: 60          # 时间窗口（秒）
+  prefix: "lychee_go_"
+
+# ---------- Cookie 配置 ----------
+cookie:
+  secret: "lychee-go-cookie-secret-change-it-in-production"  # 签名密钥
+  domain: ""          # 作用域（空 = 当前域名）
+  path: "/"           # 路径
+  max_age: 86400      # 默认过期时间（秒）
+  secure: false       # 生产环境 HTTPS 请设为 true
+  httponly: true      # 禁止 JS 访问（防 XSS）
+  samesite: "lax"     # lax / strict / none
+  prefix: ""          # Cookie 名称前缀（可选）
+
+# ---------- Swagger / API 文档 ----------
+swagger:
+  enabled: true       # 是否启用（生产环境可设 false）
+  path: "/swagger"    # Swagger UI 和 JSON 的根路径
