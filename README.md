@@ -44,6 +44,7 @@
 | 📦 | **单体配置** | 所有 15+ 个模块共享一份 `config.yml`，类似 Spring Boot 的体验 |
 | 🧩 | **模块化架构** | 每个模块都有 README，按需启用、互不耦合（未配置的模块自动跳过） |
 | 🔌 | **WebSocket 支持** | 内置 WebSocket 服务，支持消息广播、客户端管理、自定义消息处理器 |
+ei'w| 🌍 | **国际化支持** | 内置 i18n 模块，支持多语言翻译、自动语言检测 |
 | 🔐 | **全链路安全** | 内置签名 Cookie / JWT Token / 接口限流 / CORS 防护 / Session 管理 |
 | 🧪 | **零依赖启动** | 没有 MySQL 或 Redis 也能正常启动（失败模块仅 Warn，不阻塞） |
 | 🧠 | **ThinkPHP 友好** | API 风格贴近 ThinkPHP，PHP 开发者可无痛迁移到 Go |
