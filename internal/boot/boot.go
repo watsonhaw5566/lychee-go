@@ -14,6 +14,7 @@ import (
 	"lychee-go/internal/db"
 	"lychee-go/internal/env"
 	"lychee-go/internal/filesystem"
+	"lychee-go/internal/i18n"
 	"lychee-go/internal/jwt"
 	"lychee-go/internal/logger"
 	"lychee-go/internal/queue"
@@ -127,6 +128,15 @@ func shouldInitWebSocket() bool {
 	// 默认启用；只有显式 websocket.enabled: false 才禁用
 	if config.IsSet("websocket.enabled") {
 		return config.GetBool("websocket.enabled", true)
+	}
+	return true
+}
+
+// shouldInitI18n 判断是否启用国际化
+func shouldInitI18n() bool {
+	// 默认启用；只有显式 i18n.enabled: false 才禁用
+	if config.IsSet("i18n.enabled") {
+		return config.GetBool("i18n.enabled", true)
 	}
 	return true
 }
@@ -359,7 +369,17 @@ func Boot(configPath string) error {
 		addResult("WebSocket", "SKIPPED", "disabled")
 	}
 
-	// 15. 注册内置 Command 命令
+	// 15. 初始化 i18n 国际化
+	if shouldInitI18n() {
+		i18n.Init()
+		addResult("I18n", "OK",
+			fmt.Sprintf("default: %s", config.GetString("i18n.default", "zh-CN")))
+	} else {
+		logger.Info("I18n skipped: disabled by config")
+		addResult("I18n", "SKIPPED", "disabled")
+	}
+
+	// 16. 注册内置 Command 命令
 	InitCommands()
 	addResult("Commands", "OK",
 		fmt.Sprintf("%d commands registered", len(command.List())))

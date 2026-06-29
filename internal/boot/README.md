@@ -47,6 +47,7 @@ Logger:     OK (always-on)
   - Cookie       OK (httponly: true, samesite: lax)
   - Swagger      OK (path: /swagger)
   - WebSocket    OK (read_buffer: 1024, write_buffer: 1024)
+  - I18n         OK (default: zh-CN)
 ============================================================
 ```
 
@@ -73,6 +74,7 @@ Logger:     OK (always-on)
 | **Cookie** | `cookie.secret` 非空 |
 | **Swagger** | 默认启用；可通过 `swagger.enabled: false` 显式禁用 |
 | **WebSocket** | 默认启用；可通过 `websocket.enabled: false` 显式禁用 |
+| **I18n** | 默认启用；可通过 `i18n.enabled: false` 显式禁用 |
 
 ### 显式禁用的写法
 
@@ -115,6 +117,7 @@ throttle:
 12. cookie    ← 可选（需要 cookie.secret）
 13. swagger   ← 可选（生成 API 文档）
 14. websocket ← 可选（WebSocket 服务）
+15. i18n      ← 可选（国际化支持）
 ```
 
 ---
