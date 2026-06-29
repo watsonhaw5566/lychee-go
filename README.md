@@ -225,6 +225,9 @@ func Login(c *gin.Context) {
 | [**cron**](internal/cron/README.md) | 定时任务（6 字段 Cron） | — |
 | [**swagger**](internal/swagger/README.md) | API 文档生成 | — |
 | [**websocket**](internal/websocket/README.md) | WebSocket 服务（广播/消息处理） | `gorilla/websocket` |
+| [**command**](internal/command/README.md) | 命令行命令注册与执行 | — |
+| [**env**](internal/env/README.md) | 环境变量加载与管理 | — |
+| [**i18n**](internal/i18n/README.md) | 国际化支持（多语言翻译） | — |
 
 **公用工具有 2 个**：
 
