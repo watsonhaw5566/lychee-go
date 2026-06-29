@@ -3,6 +3,7 @@ package route
 import (
 	"lychee-go/app/controller"
 	"lychee-go/app/middleware"
+	internalroute "lychee-go/internal/route"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,18 +24,10 @@ func Register(r *gin.Engine) {
 	// ======== API v1 路由组 ========
 	api := r.Group("/api")
 	{
-		// 用户相关（公开）
+		// 用户资源路由（使用 internal/route 的 Resource 函数自动注册 CRUD 路由）
 		userCtrl := controller.NewUserController()
-		api.GET("/users", userCtrl.GetList)
-		api.GET("/users/:id", userCtrl.GetUser)
-		api.POST("/users", userCtrl.CreateUser)
-
-		// 需要登录的路由
-		auth := api.Group("")
-		auth.Use(middleware.Auth())
-		{
-			auth.PUT("/users/:id", userCtrl.UpdateUser)
-			auth.DELETE("/users/:id", userCtrl.DeleteUser)
-		}
+		internalroute.Resource(api, "/users", userCtrl, internalroute.ResourceOptions{
+			AuthMiddleware: middleware.Auth(),
+		})
 	}
 }

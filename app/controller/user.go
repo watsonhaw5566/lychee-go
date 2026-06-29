@@ -134,3 +134,30 @@ func (ctrl *UserController) DeleteUser(c *gin.Context) {
 
 	response.SuccessWithMessage(c, "删除成功")
 }
+
+// ======== ResourceController 接口实现 ========
+
+// Index 用户列表 GET /api/users
+func (ctrl *UserController) Index(c *gin.Context) {
+	ctrl.GetList(c)
+}
+
+// Show 获取单个用户 GET /api/users/:id
+func (ctrl *UserController) Show(c *gin.Context) {
+	ctrl.GetUser(c)
+}
+
+// Create 创建用户 POST /api/users
+func (ctrl *UserController) Create(c *gin.Context) {
+	ctrl.CreateUser(c)
+}
+
+// Update 更新用户 PUT /api/users/:id
+func (ctrl *UserController) Update(c *gin.Context) {
+	ctrl.UpdateUser(c)
+}
+
+// Delete 删除用户 DELETE /api/users/:id
+func (ctrl *UserController) Delete(c *gin.Context) {
+	ctrl.DeleteUser(c)
+}
