@@ -47,8 +47,8 @@ func shouldInitCache() bool {
 
 // shouldInitJWT 判断是否配置了 JWT
 func shouldInitJWT() bool {
-	// 必须配置了 auth.jwt_secret 非空
-	return config.IsConfigured("auth.jwt_secret")
+	// 必须配置了 jwt.secret 非空
+	return config.IsConfigured("jwt.secret")
 }
 
 // shouldInitFilesystem 判断是否配置了文件系统
@@ -269,10 +269,10 @@ func Boot(configPath string) error {
 		jwt.Init()
 		addResult("JWT", "OK",
 			fmt.Sprintf("ttl: %ds, max_per_user: %d",
-				config.GetInt("auth.jwt_ttl", 86400),
-				config.GetInt("auth.max_per_user", 10)))
+				config.GetInt("jwt.ttl", 86400),
+				config.GetInt("jwt.max_per_user", 10)))
 	} else {
-		logger.Info("JWT skipped: jwt_secret not configured")
+		logger.Info("JWT skipped: secret not configured")
 		addResult("JWT", "SKIPPED", "jwt_secret not set")
 	}
 

@@ -110,10 +110,10 @@ var once sync.Once
 // Init 初始化 JWT（全局唯一实例）
 func Init() {
 	once.Do(func() {
-		secretKey := config.GetString("auth.jwt_secret", "lychee-go-secret-key")
-		expire := int64(config.GetInt("auth.jwt_ttl", 86400))
+		secretKey := config.GetString("jwt.secret", "lychee-go-secret-key")
+		expire := int64(config.GetInt("jwt.ttl", 86400))
 		issuer := config.GetString("app.name", "lychee-go")
-		maxPerUser := config.GetInt("auth.max_per_user", 10)
+		maxPerUser := config.GetInt("jwt.max_per_user", 10)
 
 		manager = &Manager{
 			secret:     []byte(secretKey),

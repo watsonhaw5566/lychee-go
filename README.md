@@ -453,7 +453,7 @@ websocket.Broadcast("notification", map[string]string{
 3. **Redis**：限流、队列、缓存建议统一使用 Redis 存储（多实例部署必备）。
 4. **CORS**：生产环境必须用具体域名（`allow_origins: https://app.example.com`），禁止 `*`。
 5. **Cookie**：生产环境 `secure: true`，`samesite: strict`。
-6. **密钥**：`auth.jwt_secret` 和 `cookie.secret` 请使用 **不同的、强随机的** 密钥，不要提交到 Git。
+6. **密钥**：`jwt.secret` 和 `cookie.secret` 请使用 **不同的、强随机的** 密钥，不要提交到 Git。
 
 ---
 
