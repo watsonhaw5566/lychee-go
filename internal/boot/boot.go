@@ -12,6 +12,7 @@ import (
 	"lychee-go/internal/cors"
 	"lychee-go/internal/cron"
 	"lychee-go/internal/db"
+	"lychee-go/internal/env"
 	"lychee-go/internal/filesystem"
 	"lychee-go/internal/jwt"
 	"lychee-go/internal/logger"
@@ -165,7 +166,10 @@ func InitCommands() {
 // Boot 框架完整启动引导
 // ============================================================
 func Boot(configPath string) error {
-	// 1. 加载配置（必须最先）
+	// 0. 加载环境变量（必须最先，因为 config.yml 可能引用环境变量）
+	env.Load()
+
+	// 1. 加载配置
 	if err := config.Init(configPath); err != nil {
 		return err
 	}

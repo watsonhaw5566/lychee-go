@@ -1,12 +1,17 @@
 package config
 
 import (
+	"os"
+	"regexp"
 	"strings"
 
 	"github.com/spf13/viper"
 )
 
 var v *viper.Viper
+
+// 环境变量引用正则: ${VAR} 或 ${VAR:-default}
+var envVarRegex = regexp.MustCompile(`\$\{([^}:-]+)(:-([^}]*))?\}`)
 
 // Init 初始化配置（从单一 config.yml 加载）
 func Init(configPath string) error {
@@ -26,7 +31,62 @@ func Init(configPath string) error {
 		return err
 	}
 
+	// 解析配置中的环境变量引用
+	resolveEnvVars()
+
 	return nil
+}
+
+// resolveEnvVars 递归解析配置值中的环境变量引用
+func resolveEnvVars() {
+	for key := range v.AllSettings() {
+		resolveKeyEnvVars(key)
+	}
+}
+
+func resolveKeyEnvVars(key string) {
+	val := v.Get(key)
+	switch t := val.(type) {
+	case string:
+		resolved := expandEnvVars(t)
+		if resolved != t {
+			v.Set(key, resolved)
+		}
+	case map[string]interface{}:
+		for k := range t {
+			resolveKeyEnvVars(key + "." + k)
+		}
+	case []interface{}:
+		for i, item := range t {
+			if str, ok := item.(string); ok {
+				resolved := expandEnvVars(str)
+				if resolved != str {
+					t[i] = resolved
+					v.Set(key, t)
+				}
+			}
+		}
+	}
+}
+
+func expandEnvVars(value string) string {
+	return envVarRegex.ReplaceAllStringFunc(value, func(match string) string {
+		matches := envVarRegex.FindStringSubmatch(match)
+		if len(matches) >= 2 {
+			varName := matches[1]
+			defaultValue := ""
+			if len(matches) >= 4 {
+				defaultValue = matches[3]
+			}
+
+			// 先从系统环境变量获取
+			if val := os.Getenv(varName); val != "" {
+				return val
+			}
+			return defaultValue
+		}
+		return match
+	})
 }
 
 // Get 获取任意类型配置
