@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )

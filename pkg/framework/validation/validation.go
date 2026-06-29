@@ -9,7 +9,7 @@ import (
 	"strings"
 	"sync"
 
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 )
 
 // ======== 自定义验证规则 ========

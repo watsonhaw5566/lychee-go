@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 )
 
 // ======== 定时任务接口 ========

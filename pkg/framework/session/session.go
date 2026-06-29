@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"lychee-go/pkg/framework/config"
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/config"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 )
 
 type Session struct {
