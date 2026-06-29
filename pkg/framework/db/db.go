@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"lychee-go/pkg/framework/config"
-	mylog "lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/config"
+	mylog "github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

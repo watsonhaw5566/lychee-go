@@ -1,4 +1,4 @@
-module lychee-go
+module github.com/watsonhaw5566/lychee-go
 
 go 1.24.0
 

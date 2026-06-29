@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 
 	"github.com/tencentyun/cos-go-sdk-v5"
 )

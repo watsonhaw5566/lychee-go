@@ -4,7 +4,7 @@ import (
 	"os"
 	"time"
 
-	"lychee-go/pkg/framework/config"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/config"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"

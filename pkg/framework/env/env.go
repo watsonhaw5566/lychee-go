@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"lychee-go/pkg/framework/logger"
+	"github.com/watsonhaw5566/lychee-go/pkg/framework/logger"
 )
 
 var envCache = make(map[string]string)
