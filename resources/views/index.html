@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        .lychee-gradient {
+            background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FFB347 100%);
+        }
+        .bounce-animation {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-pink-50 via-white to-orange-50">
+    <header class="bg-white/80 backdrop-blur-sm shadow-sm sticky top-0 z-50">
+        <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <span class="text-xl font-bold text-red-500">Lychee-Go</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="#" class="text-gray-600 hover:text-red-500 transition-colors">文档</a>
+                <a href="#" class="text-gray-600 hover:text-red-500 transition-colors">API</a>
+                <a href="#" class="text-gray-600 hover:text-red-500 transition-colors">示例</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="relative py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-6xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-red-500 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+                        {{ .Message }}
+                    </span>
+                </h1>
+                <p class="text-gray-600 text-lg md:text-xl mb-8 max-w-2xl mx-auto">
+                    一个轻量级、高性能的 Go Web 框架，为现代 Web 应用而生
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#" class="inline-flex items-center justify-center px-8 py-3 bg-gradient-to-r from-red-500 to-pink-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all">
+                        开始使用
+                    </a>
+                    <a href="#" class="inline-flex items-center justify-center px-8 py-3 border-2 border-red-500 text-red-500 font-semibold rounded-full hover:bg-red-50 transition-all">
+                        查看文档
+                    </a>
+                </div>
+                <div class="mt-8 inline-block px-4 py-2 bg-gray-100 rounded-full">
+                    <span class="text-gray-500 text-sm">版本 </span>
+                    <span class="text-red-500 font-semibold">{{ .Version }}</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-4 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">框架特性</h2>
+                <p class="text-gray-600">轻量、高效、易用</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-8 bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="text-5xl mb-4">⚡</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">高性能</h3>
+                    <p class="text-gray-600">基于 Gin 框架，性能卓越</p>
+                </div>
+                <div class="text-center p-8 bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="text-5xl mb-4">🌱</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">模块化设计</h3>
+                    <p class="text-gray-600">按需加载，灵活扩展</p>
+                </div>
+                <div class="text-center p-8 bg-gradient-to-br from-orange-50 to-yellow-50 rounded-2xl hover:shadow-lg transition-shadow">
+                    <div class="text-5xl mb-4">🎯</div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">开发者友好</h3>
+                    <p class="text-gray-600">清晰的 API 设计，易于上手</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 px-4 lychee-gradient">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-white mb-2">10+</div>
+                    <div class="text-white/80">核心模块</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-white mb-2">0</div>
+                    <div class="text-white/80">外部依赖</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-white mb-2">MIT</div>
+                    <div class="text-white/80">开源协议</div>
+                </div>
+                <div>
+                    <div class="text-4xl md:text-5xl font-bold text-white mb-2">Go</div>
+                    <div class="text-white/80">纯 Go 实现</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 px-4 bg-gray-900 text-white">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="flex items-center justify-center space-x-2 mb-4">
+                <span class="font-semibold">Lychee-Go Framework</span>
+            </div>
+            <p class="text-gray-400 text-sm">Made with ❤️ for Go developers</p>
+        </div>
+    </footer>
+</body>
+</html>
