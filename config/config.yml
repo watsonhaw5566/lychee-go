@@ -37,13 +37,17 @@ database:
 
 # ---------- 缓存配置 ----------
 cache:
-  driver: redis
+  driver: memory           # 驱动类型: memory, file, redis
+  prefix: lychee_go_
+  default_ttl: 3600
+  # 文件驱动配置（driver 为 file 时生效）
+  file:
+    path: runtime/cache
+  # Redis 驱动配置（driver 为 redis 时生效）
   host: 127.0.0.1
   port: 6379
   password: ""
   database: 0
-  prefix: lychee_go_
-  default_ttl: 3600
 
 # ---------- JWT / Token 配置 ----------
 auth:
