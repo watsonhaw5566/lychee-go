@@ -40,8 +40,10 @@ type Config struct {
 }
 
 type SaToken struct {
-	config Config
-	mu     sync.RWMutex
+	config        Config
+	isRedisDriver bool
+	mu            sync.RWMutex
+	memoryLocks   sync.Map
 }
 
 var instance *SaToken
@@ -62,9 +64,15 @@ func Init() {
 			cfg.RenewThreshold = 0.3
 		}
 
-		instance = &SaToken{config: cfg}
-		logger.Info("[SaToken] Initialized (timeout: %ds, max_login: %d, auto_renew: %v)",
-			cfg.Timeout, cfg.MaxLoginCount, cfg.AutoRenew)
+		driver := config.GetString("cache.driver", "memory")
+		isRedis := driver == "redis"
+
+		instance = &SaToken{
+			config:        cfg,
+			isRedisDriver: isRedis,
+		}
+		logger.Info("[SaToken] Initialized (driver: %s, timeout: %ds, max_login: %d, auto_renew: %v)",
+			driver, cfg.Timeout, cfg.MaxLoginCount, cfg.AutoRenew)
 	})
 }
 
@@ -152,6 +160,13 @@ func (s *SaToken) removeTokenFromList(tokenList []string, token string) []string
 }
 
 func (s *SaToken) acquireLock(lockKey string, ttl int, waitMs int) bool {
+	if s.isRedisDriver {
+		return s.acquireRedisLock(lockKey, ttl, waitMs)
+	}
+	return s.acquireMemoryLock(lockKey, waitMs)
+}
+
+func (s *SaToken) acquireRedisLock(lockKey string, ttl int, waitMs int) bool {
 	start := time.Now().UnixMilli()
 	for time.Now().UnixMilli()-start < int64(waitMs) {
 		ok, _ := cache.SetNX(lockKey, "1", time.Duration(ttl)*time.Second)
@@ -163,8 +178,24 @@ func (s *SaToken) acquireLock(lockKey string, ttl int, waitMs int) bool {
 	return false
 }
 
+func (s *SaToken) acquireMemoryLock(lockKey string, waitMs int) bool {
+	start := time.Now().UnixMilli()
+	for time.Now().UnixMilli()-start < int64(waitMs) {
+		_, loaded := s.memoryLocks.LoadOrStore(lockKey, struct{}{})
+		if !loaded {
+			return true
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
+	return false
+}
+
 func (s *SaToken) releaseLock(lockKey string) {
-	cache.Delete(lockKey)
+	if s.isRedisDriver {
+		cache.Delete(lockKey)
+	} else {
+		s.memoryLocks.Delete(lockKey)
+	}
 }
 
 func (s *SaToken) fetchTokenInfo(token string) (*TokenInfo, error) {
