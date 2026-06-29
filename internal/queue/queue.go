@@ -11,6 +11,7 @@ import (
 	"lychee-go/internal/config"
 	"lychee-go/internal/logger"
 
+	"github.com/TencentCloud/tencentcloud-cmq-sdk-go"
 	"github.com/redis/go-redis/v9"
 )
 
@@ -91,6 +92,137 @@ func (r *RedisDriver) Size(queue string) (int64, error) {
 
 func (r *RedisDriver) Clear(queue string) error {
 	return r.client.Del(r.ctx, r.key(queue)).Err()
+}
+
+// ======== TDCMQ 驱动实现（腾讯云 CMQ） ========
+
+type TDCMQDriver struct {
+	client *tdmq.Client
+	ctx    context.Context
+}
+
+func NewTDCMQDriver(url, network, secretId, secretKey, region string) (*TDCMQDriver, error) {
+	if url == "" {
+		url = buildTDCMQURL(network, region)
+	}
+
+	client, err := tdmq.NewClient(url, secretId, secretKey, time.Second*30)
+	if err != nil {
+		return nil, err
+	}
+	return &TDCMQDriver{
+		client: client,
+		ctx:    context.Background(),
+	}, nil
+}
+
+func buildTDCMQURL(network, region string) string {
+	regionAlias := getRegionAlias(region)
+
+	switch network {
+	case "private":
+		return fmt.Sprintf("http://%s.mqadapter.cmq.tencentytun.com", regionAlias)
+	default:
+		return fmt.Sprintf("https://cmq-%s.public.tencenttdmq.com", regionAlias)
+	}
+}
+
+func getRegionAlias(region string) string {
+	regionAliasMap := map[string]string{
+		"ap-guangzhou": "gz",
+		"ap-beijing":   "bj",
+		"ap-shanghai":  "sh",
+		"ap-shenzhen":  "sz",
+		"ap-hongkong":  "hk",
+		"ap-tokyo":     "jp",
+		"ap-seoul":     "kr",
+		"eu-frankfurt": "de",
+		"us-east":      "us",
+	}
+
+	if alias, ok := regionAliasMap[region]; ok {
+		return alias
+	}
+
+	return "gz"
+}
+
+func (t *TDCMQDriver) getQueue(queueName string) *tdmq.Queue {
+	return &tdmq.Queue{
+		Client:             t.client,
+		Name:               queueName,
+		PollingWaitSeconds: 1,
+	}
+}
+
+func (t *TDCMQDriver) Push(queue string, job *JobWrapper) error {
+	data, err := json.Marshal(job)
+	if err != nil {
+		return err
+	}
+
+	q := t.getQueue(queue)
+	_, err = q.Send(string(data))
+	return err
+}
+
+func (t *TDCMQDriver) Pop(queue string) (*JobWrapper, error) {
+	q := t.getQueue(queue)
+
+	resp, err := q.Receive()
+	if err != nil {
+		return nil, err
+	}
+
+	msgBody := resp.MsgBody()
+	if msgBody == "" {
+		return nil, nil
+	}
+
+	_, _ = q.Delete(resp.Handle())
+
+	var job JobWrapper
+	if err := json.Unmarshal([]byte(msgBody), &job); err != nil {
+		return nil, err
+	}
+	return &job, nil
+}
+
+func (t *TDCMQDriver) Size(queue string) (int64, error) {
+	q := t.getQueue(queue)
+
+	msgs, err := q.BatchReceive(1)
+	if err != nil {
+		return 0, err
+	}
+
+	msgInfos := msgs.MsgInfos()
+	for _, msg := range msgInfos {
+		_, _ = q.Delete(msg.Handle())
+	}
+
+	return int64(len(msgInfos)), nil
+}
+
+func (t *TDCMQDriver) Clear(queue string) error {
+	q := t.getQueue(queue)
+
+	for {
+		msgs, err := q.BatchReceive(10)
+		if err != nil {
+			return err
+		}
+		msgInfos := msgs.MsgInfos()
+		if len(msgInfos) == 0 {
+			break
+		}
+		var handles []string
+		for _, msg := range msgInfos {
+			handles = append(handles, msg.Handle())
+		}
+		_, _ = q.BatchDelete(handles...)
+	}
+	return nil
 }
 
 // ======== 内存驱动（测试/开发用，无需 Redis） ========
@@ -187,6 +319,20 @@ func Init(redisClient *redis.Client) error {
 			return errors.New("redis client is nil for queue driver")
 		}
 		driver = NewRedisDriver(redisClient, prefix)
+	case "tdcmq":
+		url := config.GetString("queue.tdcmq.url")
+		network := config.GetString("queue.tdcmq.network", "public")
+		secretId := config.GetString("queue.tdcmq.secret_id")
+		secretKey := config.GetString("queue.tdcmq.secret_key")
+		region := config.GetString("queue.tdcmq.region", "ap-guangzhou")
+		if secretId == "" || secretKey == "" {
+			return errors.New("tdcmq secret_id and secret_key must be configured")
+		}
+		tcmqDriver, err := NewTDCMQDriver(url, network, secretId, secretKey, region)
+		if err != nil {
+			return fmt.Errorf("failed to create tdcmq driver: %w", err)
+		}
+		driver = tcmqDriver
 	default:
 		driver = NewMemoryDriver()
 	}
