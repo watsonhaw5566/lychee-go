@@ -18,6 +18,7 @@ func Register(r *gin.Engine) {
 	indexCtrl := controller.NewIndexController()
 	r.GET("/", indexCtrl.Index)
 	r.GET("/health", indexCtrl.Health)
+	r.GET("/ping", indexCtrl.Ping)
 
 	// ======== API v1 路由组 ========
 	api := r.Group("/api")
