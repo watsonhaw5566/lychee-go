@@ -21,6 +21,7 @@ import (
 	"lychee-go/internal/session"
 	"lychee-go/internal/swagger"
 	"lychee-go/internal/throttle"
+	"lychee-go/internal/view"
 	"lychee-go/internal/websocket"
 )
 
@@ -379,7 +380,14 @@ func Boot(configPath string) error {
 		addResult("I18n", "SKIPPED", "disabled")
 	}
 
-	// 16. 注册内置 Command 命令
+	// 16. 初始化 View 模板引擎
+	view.Init()
+	addResult("View", "OK",
+		fmt.Sprintf("path: %s, cache: %v",
+			config.GetString("view.path", "resources/views"),
+			config.GetBool("view.cache", false)))
+
+	// 17. 注册内置 Command 命令
 	InitCommands()
 	addResult("Commands", "OK",
 		fmt.Sprintf("%d commands registered", len(command.List())))

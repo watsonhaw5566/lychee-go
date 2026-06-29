@@ -133,3 +133,11 @@ i18n:
   enabled: false             # 是否启用国际化
   default: zh-CN            # 默认语言
   dir: resources/lang       # 语言文件目录
+
+# ---------- 模板引擎配置 ----------
+view:
+  path: resources/views      # 模板文件目录
+  cache: false               # 是否启用模板缓存（开发环境关闭，生产环境开启）
+  extension: .html           # 模板文件扩展名
+  layout: ""                 # 全局布局模板（可选）
+  content_key: content       # 布局模板中内容区块的变量名
