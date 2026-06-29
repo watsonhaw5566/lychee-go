@@ -3,6 +3,7 @@ module lychee-go
 go 1.24.0
 
 require (
+	github.com/TencentCloud/tencentcloud-cmq-sdk-go v1.0.0
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.9.1
 	github.com/gorilla/websocket v1.5.3
@@ -12,6 +13,7 @@ require (
 	go.uber.org/zap v1.26.0
 	golang.org/x/crypto v0.45.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
+	gopkg.in/yaml.v3 v3.0.1
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
 )
@@ -59,5 +61,4 @@ require (
 	golang.org/x/time v0.1.0 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
