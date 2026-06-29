@@ -65,7 +65,7 @@ Logger:     OK (always-on)
 | **Database** | `database.host` **且** `database.database` 同时非空 |
 | **Cache** | `cache.driver` **且** `cache.host` 非空，且 driver 不是 `none` / `disabled` |
 | **Filesystem** | `filesystem.default` 非空，且不是 `none` / `disabled` |
-| **JWT (auth)** | `auth.jwt_secret` 非空 |
+| **JWT** | `jwt.secret` 非空 |
 | **Session** | `session.ttl > 0`（或显式 `session.enabled: true`） |
 | **Queue** | `queue.driver` 非空，且不是 `none` / `disabled` |
 | **Cron** | 默认启用；可通过 `cron.enabled: false` 显式禁用 |
@@ -108,7 +108,7 @@ throttle:
 3. database   ← 可选
 4. cache      ← 可选（其他模块如 queue 可能依赖它）
 5. filesystem ← 可选
-6. jwt        ← 可选（需要 auth.jwt_secret）
+6. jwt        ← 可选（需要 jwt.secret）
 7. session    ← 可选
 8. queue      ← 可选（可能依赖 cache）
 9. cron       ← 可选（纯内存，默认启用）

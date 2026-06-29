@@ -49,10 +49,10 @@ cache:
   password: ""
   database: 0
 
-# ---------- JWT / Token 配置 ----------
-auth:
-  jwt_secret: "lychee-go-secret-key-change-it-in-production"
-  jwt_ttl: 86400
+# ---------- JWT 配置 ----------
+jwt:
+  secret: "lychee-go-secret-key-change-it-in-production"
+  ttl: 86400
   max_per_user: 10
 
 # ---------- 文件上传配置 ----------
@@ -91,6 +91,7 @@ session:
 
 # ---------- 跨域配置 ----------
 cors:
+  enabled: false
   allow_origins: "*"
   allow_methods: "GET,POST,PUT,DELETE,OPTIONS,PATCH"
   allow_headers: "Content-Type,Authorization,X-Requested-With"
@@ -117,18 +118,18 @@ cookie:
 
 # ---------- Swagger / API 文档 ----------
 swagger:
-  enabled: true       # 是否启用（生产环境可设 false）
+  enabled: false      # 是否启用（生产环境可设 false）
   path: "/swagger"    # Swagger UI 和 JSON 的根路径
 
 # ---------- WebSocket 配置 ----------
 websocket:
-  enabled: true             # 是否启用 WebSocket
+  enabled: false             # 是否启用 WebSocket
   read_buffer_size: 1024    # 读取缓冲区大小
   write_buffer_size: 1024   # 写入缓冲区大小
   allow_origins: "*"        # 允许的来源（* 表示允许所有）
 
 # ---------- 国际化配置 ----------
 i18n:
-  enabled: true             # 是否启用国际化
+  enabled: false             # 是否启用国际化
   default: zh-CN            # 默认语言
   dir: resources/lang       # 语言文件目录
