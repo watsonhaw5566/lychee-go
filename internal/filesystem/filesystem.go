@@ -183,8 +183,41 @@ func Init() error {
 	localURL := config.GetString("filesystem.local.url", "/uploads")
 	fs.Register("local", NewLocalDriver(localRoot, localURL))
 
-	// 可以继续扩展 OSS/S3 等驱动（TODO）
-	// fs.Register("oss", NewOSSDriver(...))
+	// 阿里云 OSS 驱动
+	ossEnabled := config.GetBool("filesystem.oss.enabled", false)
+	if ossEnabled {
+		ossEndpoint := config.GetString("filesystem.oss.endpoint", "")
+		ossAccessKeyID := config.GetString("filesystem.oss.access_key_id", "")
+		ossAccessKeySecret := config.GetString("filesystem.oss.access_key_secret", "")
+		ossBucket := config.GetString("filesystem.oss.bucket", "")
+		ossBaseURL := config.GetString("filesystem.oss.url", "")
+		if ossEndpoint != "" && ossAccessKeyID != "" && ossAccessKeySecret != "" && ossBucket != "" {
+			ossDriver, err := NewOSSDriver(ossEndpoint, ossAccessKeyID, ossAccessKeySecret, ossBucket, ossBaseURL)
+			if err != nil {
+				logger.Warn("[Filesystem] OSS driver init failed: %v", err)
+			} else {
+				fs.Register("oss", ossDriver)
+			}
+		}
+	}
+
+	// 腾讯云 COS 驱动
+	cosEnabled := config.GetBool("filesystem.cos.enabled", false)
+	if cosEnabled {
+		cosSecretID := config.GetString("filesystem.cos.secret_id", "")
+		cosSecretKey := config.GetString("filesystem.cos.secret_key", "")
+		cosRegion := config.GetString("filesystem.cos.region", "")
+		cosBucket := config.GetString("filesystem.cos.bucket", "")
+		cosBaseURL := config.GetString("filesystem.cos.url", "")
+		if cosSecretID != "" && cosSecretKey != "" && cosRegion != "" && cosBucket != "" {
+			cosDriver, err := NewCOSDriver(cosSecretID, cosSecretKey, cosRegion, cosBucket, cosBaseURL)
+			if err != nil {
+				logger.Warn("[Filesystem] COS driver init failed: %v", err)
+			} else {
+				fs.Register("cos", cosDriver)
+			}
+		}
+	}
 
 	fs.SetDefault(defaultDriver)
 	logger.Info("[Filesystem] Initialized (default: %s)", defaultDriver)
