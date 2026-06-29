@@ -74,6 +74,7 @@ lychee-go/
 │   ├── cookie/             # Cookie 管理（签名/JSON/Flash）
 │   ├── session/            # 会话管理
 │   ├── jwt/                # Token 鉴权
+│   ├── satoken/            # Sa-Token 权限认证框架
 │   ├── validation/         # 参数验证（20+ 规则）
 │   ├── filesystem/         # 文件系统（多驱动）
 │   ├── queue/              # 消息队列（Redis/Memory）
@@ -247,7 +248,7 @@ func Login(c *gin.Context) {
 
 ---
 
-## 🧱 模块索引（17 个）
+## 🧱 模块索引（18 个）
 
 每个模块的详细用法，请查看 `internal/模块名/README.md`。
 
@@ -264,6 +265,7 @@ func Login(c *gin.Context) {
 | [**cookie**](internal/cookie/README.md) | Cookie 管理（签名/JSON/Flash） | `gin-gonic/gin` |
 | [**session**](internal/session/README.md) | 会话管理（KV + 自动过期） | — |
 | [**jwt**](internal/jwt/README.md) | 轻量 Token 鉴权（类似 Sa-Token） | — |
+| [**satoken**](internal/satoken/README.md) | Sa-Token 权限认证框架（登录/登出/续期/踢人） | `go-redis/v9` |
 | [**validation**](internal/validation/README.md) | 参数验证（20+ 规则 + 自定义） | — |
 | [**filesystem**](internal/filesystem/README.md) | 文件系统（多驱动接口） | — |
 | [**queue**](internal/queue/README.md) | 消息队列（Redis/Memory） | `go-redis/v9` |

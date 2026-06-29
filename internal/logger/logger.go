@@ -11,7 +11,7 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var Log *zap.SugaredLogger
+var Log *zap.SugaredLogger = zap.NewNop().Sugar()
 
 // Init 初始化日志系统
 func Init() {

@@ -6,6 +6,7 @@ require (
 	github.com/TencentCloud/tencentcloud-cmq-sdk-go v1.0.0
 	github.com/aliyun/aliyun-oss-go-sdk v3.0.2+incompatible
 	github.com/gin-gonic/gin v1.9.1
+	github.com/google/uuid v1.1.2
 	github.com/gorilla/websocket v1.5.3
 	github.com/redis/go-redis/v9 v9.0.5
 	github.com/spf13/viper v1.16.0
