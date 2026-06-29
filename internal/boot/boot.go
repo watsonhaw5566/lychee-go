@@ -20,6 +20,7 @@ import (
 	"lychee-go/internal/session"
 	"lychee-go/internal/swagger"
 	"lychee-go/internal/throttle"
+	"lychee-go/internal/websocket"
 )
 
 // ============================================================
@@ -117,6 +118,15 @@ func shouldInitSwagger() bool {
 	// 默认启用；只有显式 swagger.enabled: false 才禁用
 	if config.IsSet("swagger.enabled") {
 		return config.GetBool("swagger.enabled", true)
+	}
+	return true
+}
+
+// shouldInitWebSocket 判断是否启用 WebSocket
+func shouldInitWebSocket() bool {
+	// 默认启用；只有显式 websocket.enabled: false 才禁用
+	if config.IsSet("websocket.enabled") {
+		return config.GetBool("websocket.enabled", true)
 	}
 	return true
 }
@@ -337,7 +347,19 @@ func Boot(configPath string) error {
 		addResult("Swagger", "SKIPPED", "disabled")
 	}
 
-	// 14. 注册内置 Command 命令
+	// 14. 初始化 WebSocket
+	if shouldInitWebSocket() {
+		websocket.Init()
+		addResult("WebSocket", "OK",
+			fmt.Sprintf("read_buffer: %d, write_buffer: %d",
+				config.GetInt("websocket.read_buffer_size", 1024),
+				config.GetInt("websocket.write_buffer_size", 1024)))
+	} else {
+		logger.Info("WebSocket skipped: disabled by config")
+		addResult("WebSocket", "SKIPPED", "disabled")
+	}
+
+	// 15. 注册内置 Command 命令
 	InitCommands()
 	addResult("Commands", "OK",
 		fmt.Sprintf("%d commands registered", len(command.List())))

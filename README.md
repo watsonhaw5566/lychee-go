@@ -43,6 +43,7 @@
 | ⚡ | **原生高性能** | 基于 Gin 封装，零额外抽象层开销，享受 Go 原生并发性能 |
 | 📦 | **单体配置** | 所有 15+ 个模块共享一份 `config.yml`，类似 Spring Boot 的体验 |
 | 🧩 | **模块化架构** | 每个模块都有 README，按需启用、互不耦合（未配置的模块自动跳过） |
+| 🔌 | **WebSocket 支持** | 内置 WebSocket 服务，支持消息广播、客户端管理、自定义消息处理器 |
 | 🔐 | **全链路安全** | 内置签名 Cookie / JWT Token / 接口限流 / CORS 防护 / Session 管理 |
 | 🧪 | **零依赖启动** | 没有 MySQL 或 Redis 也能正常启动（失败模块仅 Warn，不阻塞） |
 | 🧠 | **ThinkPHP 友好** | API 风格贴近 ThinkPHP，PHP 开发者可无痛迁移到 Go |
@@ -60,7 +61,7 @@ lychee-go/
 ├── go.mod / go.sum         # 依赖管理
 ├── config/
 │   └── config.yml          # 单一配置文件（类似 Spring Boot）
-├── internal/               # 🔴 框架核心（15 个模块）
+├── internal/               # 🔴 框架核心（16 个模块）
 │   ├── boot/               # 启动引导
 │   ├── config/             # 配置管理 (viper)
 │   ├── logger/             # 日志系统 (zap)
@@ -75,7 +76,9 @@ lychee-go/
 │   ├── validation/         # 参数验证（20+ 规则）
 │   ├── filesystem/         # 文件系统（多驱动）
 │   ├── queue/              # 消息队列（Redis/Memory）
-│   └── cron/               # 定时任务（6 字段 Cron）
+│   ├── cron/               # 定时任务（6 字段 Cron）
+│   ├── swagger/            # API 文档生成
+│   └── websocket/          # WebSocket 服务
 ├── app/                    # 🟢 应用代码（你写的业务）
 │   ├── controller/
 │   ├── model/
@@ -243,7 +246,7 @@ func Login(c *gin.Context) {
 
 ---
 
-## 🧱 模块索引（15 个）
+## 🧱 模块索引（17 个）
 
 每个模块的详细用法，请查看 `internal/模块名/README.md`。
 
@@ -264,6 +267,8 @@ func Login(c *gin.Context) {
 | [**filesystem**](internal/filesystem/README.md) | 文件系统（多驱动接口） | — |
 | [**queue**](internal/queue/README.md) | 消息队列（Redis/Memory） | `go-redis/v9` |
 | [**cron**](internal/cron/README.md) | 定时任务（6 字段 Cron） | — |
+| [**swagger**](internal/swagger/README.md) | API 文档生成 | — |
+| [**websocket**](internal/websocket/README.md) | WebSocket 服务（广播/消息处理） | `gorilla/websocket` |
 
 **公用工具有 2 个**（可在业务中随意引用）：
 
@@ -359,6 +364,33 @@ r.POST("/login", throttle.Middleware(throttle.Login()), loginHandler)
 
 // API 通用：每分钟 60 次
 api.Use(throttle.API())
+```
+
+### 场景 7：WebSocket 实时通信
+
+```go
+import "lychee-go/internal/websocket"
+
+// 注册消息处理器
+websocket.RegisterHandler("chat", func(conn *websocket.Conn, msg websocket.Message) error {
+    var data struct {
+        User    string `json:"user"`
+        Content string `json:"content"`
+    }
+    json.Unmarshal(msg.Payload, &data)
+    
+    // 广播消息给所有在线客户端
+    return websocket.Broadcast("chat", data)
+})
+
+// 配置 WebSocket 路由
+r.GET("/ws", websocket.HandleWebSocket)
+
+// 在任意地方推送通知
+websocket.Broadcast("notification", map[string]string{
+    "title": "系统通知",
+    "body":  "您有新消息",
+})
 ```
 
 ---

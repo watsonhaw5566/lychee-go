@@ -45,6 +45,8 @@ Logger:     OK (always-on)
   - CORS         OK
   - Throttle     OK (limit: 60/60s)
   - Cookie       OK (httponly: true, samesite: lax)
+  - Swagger      OK (path: /swagger)
+  - WebSocket    OK (read_buffer: 1024, write_buffer: 1024)
 ============================================================
 ```
 
@@ -69,6 +71,8 @@ Logger:     OK (always-on)
 | **CORS** | `cors.allow_origins` 非空，且不是 `none` / `disabled` |
 | **Throttle** | `throttle.limit > 0` **且** `throttle.window > 0`（或显式 `throttle.enabled: true`） |
 | **Cookie** | `cookie.secret` 非空 |
+| **Swagger** | 默认启用；可通过 `swagger.enabled: false` 显式禁用 |
+| **WebSocket** | 默认启用；可通过 `websocket.enabled: false` 显式禁用 |
 
 ### 显式禁用的写法
 
@@ -97,18 +101,20 @@ throttle:
 启动的严格顺序（依赖在前的先初始化）：
 
 ```
-1. config    ← 必须第一个，所有模块都依赖它
-2. logger    ← 必须第二个，所有模块都用它输出日志
-3. database  ← 可选
-4. cache     ← 可选（其他模块如 queue 可能依赖它）
+1. config     ← 必须第一个，所有模块都依赖它
+2. logger     ← 必须第二个，所有模块都用它输出日志
+3. database   ← 可选
+4. cache      ← 可选（其他模块如 queue 可能依赖它）
 5. filesystem ← 可选
-6. jwt       ← 可选（需要 auth.jwt_secret）
-7. session   ← 可选
-8. queue     ← 可选（可能依赖 cache）
-9. cron      ← 可选（纯内存，默认启用）
-10. cors     ← 可选
-11. throttle ← 可选
-12. cookie   ← 可选（需要 cookie.secret）
+6. jwt        ← 可选（需要 auth.jwt_secret）
+7. session    ← 可选
+8. queue      ← 可选（可能依赖 cache）
+9. cron       ← 可选（纯内存，默认启用）
+10. cors      ← 可选
+11. throttle  ← 可选
+12. cookie    ← 可选（需要 cookie.secret）
+13. swagger   ← 可选（生成 API 文档）
+14. websocket ← 可选（WebSocket 服务）
 ```
 
 ---
